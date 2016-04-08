@@ -1,0 +1,85 @@
+clbo:nodejs2016 clbo$ mongo
+MongoDB shell version: 3.0.2
+connecting to: test
+Server has startup warnings:
+2016-04-08T09:25:29.751+0200 I CONTROL  [initandlisten]
+2016-04-08T09:25:29.751+0200 I CONTROL  [initandlisten] ** WARNING: soft rlimits too low. Number of files is 256, should be at least 1000
+> show dbs
+IMDB   0.078GB
+local  0.078GB
+> use IMDB
+switched to db IMDB
+> db.dropDatabase()
+{ "dropped" : "IMDB", "ok" : 1 }
+> show bds
+2016-04-08T09:27:55.649+0200 E QUERY    Error: don't know how to show [bds]
+    at Error (<anonymous>)
+    at shellHelper.show (src/mongo/shell/utils.js:733:11)
+    at shellHelper (src/mongo/shell/utils.js:524:36)
+    at (shellhelp2):1:1 at src/mongo/shell/utils.js:733
+> showdbs
+2016-04-08T09:27:59.272+0200 E QUERY    ReferenceError: showdbs is not defined
+    at (shell):1:1
+> show dbs
+local  0.078GB
+> use IMDB
+switched to db IMDB
+> db.movies.insert({"title":"X-Men", "releaseyear":"1999"})
+WriteResult({ "nInserted" : 1 })
+> db.movies.find()
+{ "_id" : ObjectId("57075f562ad9114afb79848d"), "title" : "X-Men", "releaseyear" : "1999" }
+> db.movies.find().pretty()
+{
+	"_id" : ObjectId("57075f562ad9114afb79848d"),
+	"title" : "X-Men",
+	"releaseyear" : "1999"
+}
+> db.movies.insert({"title":"It Follows", "releaseyear":"2016", "blabla":"hshkfjhsdjfhsdkjf"})
+WriteResult({ "nInserted" : 1 })
+> db.movies.find().pretty()
+{
+	"_id" : ObjectId("57075f562ad9114afb79848d"),
+	"title" : "X-Men",
+	"releaseyear" : "1999"
+}
+{
+	"_id" : ObjectId("570760a32ad9114afb79848e"),
+	"title" : "It Follows",
+	"releaseyear" : "2016",
+	"blabla" : "hshkfjhsdjfhsdkjf"
+}
+> db.movies.update({"title" : "X-Men"}, {$set: {"releaseyear":"3000"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.movies.find().pretty()
+{
+	"_id" : ObjectId("57075f562ad9114afb79848d"),
+	"title" : "X-Men",
+	"releaseyear" : "3000"
+}
+{
+	"_id" : ObjectId("570760a32ad9114afb79848e"),
+	"title" : "It Follows",
+	"releaseyear" : "2016",
+	"blabla" : "hshkfjhsdjfhsdkjf"
+}
+> db.movies.update({"title" : "It Follows"},{"releaseyear":"3000"})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.movies.find().pretty()
+{
+	"_id" : ObjectId("57075f562ad9114afb79848d"),
+	"title" : "X-Men",
+	"releaseyear" : "3000"
+}
+{ "_id" : ObjectId("570760a32ad9114afb79848e"), "releaseyear" : "3000" }
+> db.movies.update({"_id":ObjectId("57075f562ad9114afb79848d")},{"releaseyear":"xxxxxx"})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.movies.find().pretty()
+{ "_id" : ObjectId("57075f562ad9114afb79848d"), "releaseyear" : "xxxxxx" }
+{ "_id" : ObjectId("570760a32ad9114afb79848e"), "releaseyear" : "3000" }
+> db.movies.remove("_id": ObjectId("57075f562ad9114afb79848d"));
+2016-04-08T09:51:46.446+0200 E QUERY    SyntaxError: Unexpected token :
+> db.movies.remove({"_id":ObjectId("57075f562ad9114afb79848d")});
+WriteResult({ "nRemoved" : 1 })
+> db.movies.find().pretty()
+{ "_id" : ObjectId("570760a32ad9114afb79848e"), "releaseyear" : "3000" }
+>
